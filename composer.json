@@ -1,0 +1,10 @@
+{
+    "require": {
+        "symfony/console": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "CLI_Pool\\": "src/"
+        }
+    }
+}

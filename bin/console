@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+
+use CLI_Pool\Commands\CreateGUICommand\CreateGUICommand;
+use Symfony\Component\Console\Application;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$app = new Application('CLI_Pool', '1.0.0');
+
+$app->add(new CreateGUICommand());
+
+try {
+    $app->run();
+} catch (Exception $e) {
+    echo $e->getMessage();
+    exit(1);
+}
