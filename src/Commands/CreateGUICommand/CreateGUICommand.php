@@ -4,14 +4,10 @@ declare(strict_types=1);
 namespace CLI_Pool\Commands\CreateGUICommand;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
-
-const DIR_UP = __DIR__ . '../../../';
 
 class CreateGUICommand extends Command
 {
@@ -32,7 +28,7 @@ class CreateGUICommand extends Command
         $project = $io->choice('In which project you want to create a new GUI?', $projectDirs);
         $guiName = $io->askQuestion(new Question('Name of the GUI you want to create? No GUI_ needed'));
 
-        $projectDir = DIR_UP . $project;
+        $projectDir = SRC_DIR . '/' . $project;
         $fullGUI_DIR = $projectDir . '/guis/';
         $guiNameWithPrefix = 'GUI_' . $guiName;
 
@@ -102,7 +98,7 @@ class CreateGUICommand extends Command
     private function getProjectDirs(): array
     {
         $projectDirs = [];
-        $iterator = new \DirectoryIterator(DIR_UP);
+        $iterator = new \DirectoryIterator(SRC_DIR);
         foreach ($iterator as $items) {
             if ($items->isDir() && !$items->isDot()) {
                 $projectDirs[] = $items->getFilename();

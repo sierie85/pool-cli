@@ -2,6 +2,7 @@
 <?php
 
 use CLI_Pool\Commands\CreateGUICommand\CreateGUICommand;
+use CLI_Pool\Commands\CreateDAOCommand\CreateDAOCommand;
 use Symfony\Component\Console\Application;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -9,6 +10,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $app = new Application('CLI_Pool', '1.0.0');
 
 $app->add(new CreateGUICommand());
+$app->add(new CreateDAOCommand());
 
 try {
     $app->run();

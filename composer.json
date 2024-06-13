@@ -1,10 +1,14 @@
 {
-    "require": {
-        "symfony/console": "^7.1"
+  "require": {
+    "symfony/console": "^7.1",
+    "ext-pdo": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "CLI_Pool\\": "src/"
     },
-    "autoload": {
-        "psr-4": {
-            "CLI_Pool\\": "src/"
-        }
-    }
+    "files": [
+      "config/config.php"
+    ]
+  }
 }

@@ -7,3 +7,8 @@ adds CLI commands to the pool
 ```bash
 php bin/console create_gui
 ```
+
+### Create DAO Command
+
+### List all schemas / routes
+
