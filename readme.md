@@ -25,3 +25,11 @@ php bin/console show_routes
 ```bash
 php bin/console list_guis
 ```
+
+## Tests
+
+### Run Test
+
+```bash
+./vendor/bin/phpunit tests
+```

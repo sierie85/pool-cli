@@ -36,8 +36,10 @@ class CreateDAOCommand extends Command
 
         $columns = $this->getColumnsMeta($this->pdo, $table);
 
-        // DAO Folder as Const...? because all dao from all projects are in one place...
-        /** OR this way..?
+        var_dump($columns);
+
+        // DAO Folder as Const...? because all daos from all projects are in one place...
+        /** OR this way -> select project like in gui..?
          * $projectDirs = $this->getProjectDirs();
          * $project = $io->choice('In which project you want to create a new GUI?', $projectDirs);
          * $projectDir = SRC_DIR . '/' . $project;
@@ -50,7 +52,8 @@ class CreateDAOCommand extends Command
          */
 
         // create DAO
-        file_put_contents(DAO_DIR . "/$table.php", $this->generateDAO($columns, $table, $database));
+        $className = self::stringToCamelcase($table, '_');
+        file_put_contents(DAO_DIR . "/$className.php", $this->generateDAO($columns, $table, $database, $className));
 
         $io->success("DAO generated successfully");
         return Command::SUCCESS;
@@ -84,21 +87,18 @@ class CreateDAOCommand extends Command
         return $pdo->query('SHOW FULL COLUMNS FROM ' . $table)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    private function generateDAO(array $columns, string $table, string $database): string
+    private function generateDAO(array $columns, string $table, string $database, string $className): string
     {
-
-        // toodo only one loop
-        // create pk, column array, and column commend
-
-        $columnsArray = "";
+        $pk = ""; // array? more than one primary key?
+        $fk = ""; // array of foreign keys
         $columnsComment = "";
-        $pk = "";
+        $columnsArray = "";
 
         foreach ($columns as $column) {
             $primaryKey = $column['Key'] === 'PRI' ? 'primaryKey' : '';
-            $extra = $column['Extra'] !== '' ? "extra: {$column['Extra']}" : '';
-            $default = ($column['Default'] === '' || $column['Default'] === NULL) ? '' : "default: {$column['Default']}";
-            $columnsComment .= "\t * {$column['Field']} ({$column['Type']}) $default $extra $primaryKey\n";
+            $extra = $column['Extra'] !== '' ? "{$column['Extra']}" : '';
+            $notNull = $column['Null'] === 'NO' ? 'NOT NULL' : '';
+            $columnsComment .= "\t * {$column['Field']} ({$column['Type']}) $notNull $extra $primaryKey\n";
 
             if ($column['Key'] === 'PRI') {
                 $pk = "\tprivate string \$pk = '{$column['Field']}';\n";
@@ -107,32 +107,30 @@ class CreateDAOCommand extends Command
             $columnsArray .= "\t\t'{$column['Field']}',\n";
         }
 
-        // todo make className camelCase
-        $className = ucfirst($table);
+        $fileData = "<?php\n";
+        $fileData .= "declare(strict_types=1);\n\n";
+        $fileData .= "namespace " . DAO_NAMESPACE . ";\n\n";
+        $fileData .= "class $className\n";
+        $fileData .= "{\n";
+        $fileData .= "\tprotected string \$database = '$database';\n";
+        $fileData .= "\tprotected string \$table = '$table';\n";
+        $fileData .= $pk;
+        $fileData .= "\t\n";
+        $fileData .= "\t/**\n";
+        $fileData .= "\t * columns of table $table\n";
+        $fileData .= "\t *\n";
+        $fileData .= $columnsComment;
+        $fileData .= "\t */\n";
+        $fileData .= "\tprivate array \$columns = [\n";
+        $fileData .= $columnsArray;
+        $fileData .= "\t];\n";
+        $fileData .= "}\n";
 
-        $data = "<?php\n";
-        $data .= "declare(strict_types=1);\n\n";
-        $data .= "//namespace ?\\daos;\n\n";
-        $data .= "class $className\n";
-        $data .= "{\n";
-        $data .= "\tprotected string \$database = '$database';\n";
-        $data .= "\tprotected string \$table = '$table';\n";
-        $data .= $pk;
+        return $fileData;
+    }
 
-        $data .= "\t\n";
-
-        $data .= "\t/**\n";
-        $data .= "\t * columns of table $table\n";
-        $data .= "\t *\n";
-        $data .= $columnsComment;
-        $data .= "\t */\n";
-
-        $data .= "\tprivate array \$columns = [\n";
-        $data .= $columnsArray;
-        $data .= "\t];\n";
-
-        $data .= "}\n";
-
-        return $data;
+    public static function stringToCamelcase(string $string, string $separator): string
+    {
+        return ucfirst(str_replace($separator, '', ucwords($string, $separator)));
     }
 }

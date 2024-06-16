@@ -10,5 +10,8 @@
     "files": [
       "config/config.php"
     ]
+  },
+  "require-dev": {
+    "phpunit/phpunit": "11"
   }
 }

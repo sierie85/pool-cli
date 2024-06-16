@@ -6,6 +6,8 @@ const SRC_DIR = BASE_DIR . '/src';
 
 const DAO_DIR = SRC_DIR . '/daos';
 
+const DAO_NAMESPACE = 'CLI_Pool\daos';
+
 const DATABASE_CONNECTIONS = [
     'default' => [
         'host' => 'localhost',
