@@ -8,6 +8,7 @@ use Pool_CLI\Commands\ShowSchemesCommand\ShowSchemesCommand;
 use Symfony\Component\Console\Application;
 
 require_once $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
+require_once $_composer_autoload_path . '../config/pool-cli.php' ?? __DIR__ . '../config/pool-cli.php';
 
 $app = new Application('Pool-CLI', '1.0.0');
 

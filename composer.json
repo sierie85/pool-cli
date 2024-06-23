@@ -19,10 +19,7 @@
   "autoload": {
     "psr-4": {
       "Pool_CLI\\": "src/"
-    },
-    "files": [
-      "config/pool-cli.php"
-    ]
+    }
   },
   "require-dev": {
     "phpunit/phpunit": "11"
