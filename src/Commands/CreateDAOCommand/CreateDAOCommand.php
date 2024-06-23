@@ -79,7 +79,7 @@ class CreateDAOCommand extends Command
 
     private function generateDAO(array $columns, string $table, string $database, string $className): string
     {
-        $pk = "";
+        $pk = ""; // array? more than one primary key?
         $fk = ""; // array of foreign keys
         $columnsComment = "";
         $columnsArray = "";
@@ -91,7 +91,9 @@ class CreateDAOCommand extends Command
             $columnsComment .= "\t * {$column['Field']} ({$column['Type']}) $notNull $extra $primaryKey\n";
 
             if ($column['Key'] === 'PRI') {
-                $pk = "\tprivate string \$pk = '{$column['Field']}';\n";
+                $pk = "\tprotected array \$pk = [\n";
+                $pk .= "\t\t'{$column['Field']}'\n";
+                $pk .= "\t];\n";
             }
 
             $columnsArray .= "\t\t'{$column['Field']}',\n";
@@ -108,8 +110,8 @@ class CreateDAOCommand extends Command
         $fileData .= "use pool\classes\Database\DAO\MySQL_DAO;\n\n";
         $fileData .= "class $className extends MySQL_DAO\n";
         $fileData .= "{\n";
-        $fileData .= "\tprotected string \$database = '$database';\n";
-        $fileData .= "\tprotected string \$table = '$table';\n";
+        $fileData .= "\tprotected static ?string \$databaseName = '$database';\n";
+        $fileData .= "\tprotected static ?string \$tableName = '$table';\n";
         $fileData .= $pk;
         $fileData .= "\t\n";
         $fileData .= "\t/**\n";
@@ -117,7 +119,7 @@ class CreateDAOCommand extends Command
         $fileData .= "\t *\n";
         $fileData .= $columnsComment;
         $fileData .= "\t */\n";
-        $fileData .= "\tprivate array \$columns = [\n";
+        $fileData .= "\tprotected array \$columns = [\n";
         $fileData .= $columnsArray;
         $fileData .= "\t];\n";
         $fileData .= "}\n";
