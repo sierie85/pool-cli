@@ -43,10 +43,14 @@ class CreateGUICommand extends Command
         }
         // load dummy GUI Class to file
         $dummyClass = file_get_contents(__DIR__ . '/Templates/GUI_Example.php');
-        // TODO: replace namespace
-        // TODO: replace use statement
+
+        // TODO: how to proper handle namespace...?
+        // TODO: how to add proper use statements?
+        $mainClassContent = str_replace('_project_dir_', $project, $dummyClass);
+        $mainClassContent .= str_replace('GUI_Example', $guiNameWithPrefix, $dummyClass);
+
         // create main GUI Class
-        $mainClass = file_put_contents($fullGUI_DIR . '/' . $guiNameWithPrefix . '/' . $guiNameWithPrefix . '.php', str_replace('GUI_Example', $guiNameWithPrefix, $dummyClass));
+        $mainClass = file_put_contents($fullGUI_DIR . '/' . $guiNameWithPrefix . '/' . $guiNameWithPrefix . '.php', $mainClassContent);
         if (!$mainClass) {
             $io->error("main class file failed to create");
             return Command::FAILURE;

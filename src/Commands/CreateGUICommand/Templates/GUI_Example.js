@@ -1,5 +1,7 @@
 class GUI_Example extends GUI_Module {
-
+    init(options = {}) {
+        console.log('GUI_Example initialized');
+    }
 }
 
-Weblication.register(GUI_Example);
+Weblication.registerClass(GUI_Example);
