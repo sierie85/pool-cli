@@ -48,7 +48,7 @@ class CreateGUICommand extends Command
         // TODO: how to add proper use statements?
         $mainClassContent = str_replace('_project_dir_', $project, $dummyClass);
         $mainClassContent = str_replace('GUI_Example', $guiNameWithPrefix, $mainClassContent);
-        $mainClassContent = str_replace('example', strtolower($guiNameWithPrefix), $mainClassContent);
+        $mainClassContent = str_replace('example', strtolower($guiName), $mainClassContent);
 
         // create main GUI Class
         $mainClass = file_put_contents($fullGUI_DIR . '/' . $guiNameWithPrefix . '/' . $guiNameWithPrefix . '.php', $mainClassContent);
