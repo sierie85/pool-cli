@@ -31,6 +31,8 @@ add following to composer.json
 php vendor/bin/pool-cli create_gui
 ```
 
+todo: add options --no-comments --no-styles --no-scripts etc.
+
 ### Create DAO Command (*alpha*)
 
 ```bash

@@ -27,33 +27,23 @@ class CreateDAOCommand extends Command
 
         $io->title('<info>Generate new DAO</info>');
 
-        $dsn = $io->choice('Select DSN', DATABASE_CONNECTIONS);
-        $this->connect($dsn);
+        $dsn = $io->choice('Select DSN', array_keys(DATABASE_CONNECTIONS));
+        $this->connect(DATABASE_CONNECTIONS[$dsn]);
         $databases = $this->getDatabases($this->pdo);
         $database = $io->choice('Select Database', $databases);
         $tables = $this->getTables($this->pdo, $database);
         $table = $io->choice('Select Table', $tables);
-
         $columns = $this->getColumnsMeta($this->pdo, $table);
-
-        var_dump($columns);
-
-        // DAO Folder as Const...? because all daos from all projects are in one place...
-        /** OR this way -> select project like in gui..?
-         * $projectDirs = $this->getProjectDirs();
-         * $project = $io->choice('In which project you want to create a new GUI?', $projectDirs);
-         * $projectDir = SRC_DIR . '/' . $project;
-         * // create DAO folder
-         * $mkdirGUI = mkdir($projectDir . '/dao', 0755, true);
-         * if (!$mkdirGUI) {
-         * $io->error("directory failed to create");
-         * return Command::FAILURE;
-         * }
-         */
-
-        // create DAO
         $className = self::stringToCamelcase($table, '_');
-        file_put_contents(DAO_DIR . "/$className.php", $this->generateDAO($columns, $table, $database, $className));
+
+        $dao = file_put_contents(
+            DAO_DIR . "/$className.php",
+            $this->generateDAO($columns, $table, $database, $className)
+        );
+        if (!$dao) {
+            $io->error("dao failed to create");
+            return Command::FAILURE;
+        }
 
         $io->success("DAO generated successfully");
         return Command::SUCCESS;
@@ -89,7 +79,7 @@ class CreateDAOCommand extends Command
 
     private function generateDAO(array $columns, string $table, string $database, string $className): string
     {
-        $pk = ""; // array? more than one primary key?
+        $pk = "";
         $fk = ""; // array of foreign keys
         $columnsComment = "";
         $columnsArray = "";
@@ -109,6 +99,10 @@ class CreateDAOCommand extends Command
 
         $fileData = "<?php\n";
         $fileData .= "declare(strict_types=1);\n\n";
+        /**
+         * todo: rethink: Namespace for DAO = Const, because all daos from all projects are in one place.. select
+         * project for namespace?
+         */
         $fileData .= "namespace " . DAO_NAMESPACE . ";\n\n";
         $fileData .= "class $className\n";
         $fileData .= "{\n";
