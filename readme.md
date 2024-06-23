@@ -4,7 +4,7 @@ adds CLI commands to pool-framework
 
 ## install
 
-lorem
+filll out
 
 ## usage
 
