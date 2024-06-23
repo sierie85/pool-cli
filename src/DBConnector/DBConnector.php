@@ -6,13 +6,15 @@ namespace CLI_Pool\DBConnector;
 use PDO;
 use PDOException;
 
-class DBConnector
+// todo: maybe mysqli is needed for production/dev?
+
+readonly class DBConnector
 {
     public function __construct(
-        private readonly string $host,
-        private readonly string $port,
-        private readonly string $user,
-        private readonly string $password,
+        private string $host,
+        private string $port,
+        private string $user,
+        private string $password,
     )
     {
     }
