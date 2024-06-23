@@ -104,7 +104,9 @@ class CreateDAOCommand extends Command
          * project for namespace?
          */
         $fileData .= "namespace " . DAO_NAMESPACE . ";\n\n";
-        $fileData .= "class $className\n";
+        // todo: --option from which Parent-DAO-Class to extend
+        $fileData .= "use pool\classes\Database\DAO\MySQL_DAO;\n\n";
+        $fileData .= "class $className extends MySQL_DAO\n";
         $fileData .= "{\n";
         $fileData .= "\tprotected string \$database = '$database';\n";
         $fileData .= "\tprotected string \$table = '$table';\n";
