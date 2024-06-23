@@ -48,6 +48,7 @@ class CreateGUICommand extends Command
         // TODO: how to add proper use statements?
         $mainClassContent = str_replace('_project_dir_', $project, $dummyClass);
         $mainClassContent = str_replace('GUI_Example', $guiNameWithPrefix, $mainClassContent);
+        $mainClassContent = str_replace('example', strtolower($guiNameWithPrefix), $mainClassContent);
 
         // create main GUI Class
         $mainClass = file_put_contents($fullGUI_DIR . '/' . $guiNameWithPrefix . '/' . $guiNameWithPrefix . '.php', $mainClassContent);
@@ -57,7 +58,7 @@ class CreateGUICommand extends Command
         }
 
         $dummyTemplate = file_get_contents(__DIR__ . '/Templates/tpl_example.html');
-        $template = file_put_contents($fullGUI_DIR . '/' . $guiNameWithPrefix . '/' . 'tpl_' . strtolower($guiName) . '_.html', $dummyTemplate);
+        $template = file_put_contents($fullGUI_DIR . '/' . $guiNameWithPrefix . '/' . 'tpl_' . strtolower($guiName) . '.html', $dummyTemplate);
         if (!$template) {
             $io->error("template file failed to create");
             return Command::FAILURE;
@@ -85,7 +86,7 @@ class CreateGUICommand extends Command
             }
         }
 
-        $schemaFile = file_put_contents($projectDir . '/schemes/' . strtolower($guiName) . '.html', "[\\$project\\guis\\$guiNameWithPrefix]");
+        $schemaFile = file_put_contents($projectDir . '/schemes/' . strtolower($guiName) . '.html', "[\\$project\\guis\\$guiNameWithPrefix\\$guiNameWithPrefix]");
         if (!$schemaFile) {
             $io->error("schemaFile failed to create");
             return Command::FAILURE;
