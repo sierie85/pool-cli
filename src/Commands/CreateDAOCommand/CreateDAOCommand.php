@@ -28,7 +28,7 @@ class CreateDAOCommand extends Command
         $io->title('<info>Generate new DAO</info>');
 
         $dsn = $io->choice('Select DSN', array_keys(DATABASE_CONNECTIONS));
-        $this->connect(DATABASE_CONNECTIONS[$dsn]);
+        $this->connect($dsn);
         $databases = $this->getDatabases($this->pdo);
         $database = $io->choice('Select Database', $databases);
         $tables = $this->getTables($this->pdo, $database);
