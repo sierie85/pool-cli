@@ -3,9 +3,12 @@
     "symfony/console": "^7.1",
     "ext-pdo": "*"
   },
+  "bin": [
+    "bin/pool-cli"
+  ],
   "autoload": {
     "psr-4": {
-      "CLI_Pool\\": "src/"
+      "Pool_CLI\\": "src/"
     },
     "files": [
       "config/config.php"

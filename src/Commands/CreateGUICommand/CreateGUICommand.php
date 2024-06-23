@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace CLI_Pool\Commands\CreateGUICommand;
+namespace Pool_CLI\Commands\CreateGUICommand;
 
+use Pool_CLI\Helper\Helper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,7 +25,7 @@ class CreateGUICommand extends Command
 
         $io->title('<info>Generate new GUI</info>');
 
-        $projectDirs = $this->getProjectDirs();
+        $projectDirs = Helper::getProjectDirs(SRC_DIR);
         $project = $io->choice('In which project you want to create a new GUI?', $projectDirs);
         $guiName = $io->askQuestion(new Question('Name of the GUI you want to create? No GUI_ needed'));
 

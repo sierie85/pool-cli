@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace CLI_Pool\Commands\CreateDAOCommand;
+namespace Pool_CLI\Commands\CreateDAOCommand;
 
-use CLI_Pool\DBConnector\DBConnector;
+use Pool_CLI\DBConnector\DBConnector;
 use PDO;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

@@ -2,8 +2,9 @@
 <?php
 declare(strict_types=1);
 
-use CLI_Pool\Commands\CreateGUICommand\CreateGUICommand;
-use CLI_Pool\Commands\CreateDAOCommand\CreateDAOCommand;
+use Pool_CLI\Commands\CreateGUICommand\CreateGUICommand;
+use Pool_CLI\Commands\CreateDAOCommand\CreateDAOCommand;
+use Pool_CLI\Commands\ShowSchemesCommand\ShowSchemesCommand;
 use Symfony\Component\Console\Application;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -12,6 +13,7 @@ $app = new Application('Pool-CLI', '1.0.0');
 
 $app->add(new CreateGUICommand());
 $app->add(new CreateDAOCommand());
+$app->add(new ShowSchemesCommand());
 
 try {
     $app->run();

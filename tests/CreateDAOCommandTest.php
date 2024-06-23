@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use CLI_Pool\Commands\CreateDAOCommand\CreateDAOCommand;
 use PHPUnit\Framework\TestCase;
+use Pool_CLI\Commands\CreateDAOCommand\CreateDAOCommand;
 
 class CreateDAOCommandTest extends TestCase
 {

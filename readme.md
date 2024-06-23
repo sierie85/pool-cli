@@ -2,28 +2,34 @@
 
 adds CLI commands to pool-framework
 
-### Create GUI Command *alpha*
+## install
+
+lorem
+
+## usage
+
+### Create GUI Command (*alpha*)
 
 ```bash
-php bin/console create_gui
+php bin/pool-cli create_gui
 ```
 
-### Create DAO Command *alpha*
+### Create DAO Command (*alpha*)
 
 ```bash
-php bin/console create_dao
+php bin/pool-cli create_dao
 ```
 
-### List all schemas / routes *todo*
+### List all schemes / routes (*todo*)
 
 ```bash
-php bin/console show_routes
+php bin/pool-cli show_routes
 ```
 
-### List all GUI's *todo*
+### List all GUI's (*todo*)
 
 ```bash
-php bin/console list_guis
+php bin/pool-cli list_guis
 ```
 
 ## Tests

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace CLI_Pool\DBConnector;
+namespace Pool_CLI\DBConnector;
 
 use PDO;
 use PDOException;
