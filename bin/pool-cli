@@ -8,8 +8,22 @@ use Pool_CLI\Commands\ShowSchemesCommand\ShowSchemesCommand;
 use Symfony\Component\Console\Application;
 
 require_once $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
-$_composer_bin_dir = $_composer_bin_dir ?? __DIR__ . '/../../../bin/';
-require_once $_composer_bin_dir . '/../../config/pool-cli.php' ?? __DIR__ . '../config/pool-cli.php';
+
+$configPath = '';
+if (isset($_composer_bin_dir)) {
+    $configPath = $_composer_bin_dir . '/../../config';
+    if (!is_file($configPath . '/pool-cli.php')) {
+        echo 'No config-file found. Try to create an example in /config/pool-cli.php' . PHP_EOL;
+        if (!copy(__DIR__ . '/../config/pool-cli.php.empty', $configPath . '/pool-cli.php')) {
+            echo 'Could not create config-file. Please create a config/pool-cli.php directory and file and try again';
+            exit(1);
+        }
+        echo 'Config-file created. Please edit it and try again' . PHP_EOL;
+    }
+} else {
+    $configPath = __DIR__ . '/../config';
+}
+require_once $configPath . '/pool-cli.php';
 
 $app = new Application('Pool-CLI', '1.0.0');
 
