@@ -21,7 +21,7 @@
       "Pool_CLI\\": "src/"
     },
     "files": [
-      "config/config.php"
+      "config/pool-cli.php"
     ]
   },
   "require-dev": {
