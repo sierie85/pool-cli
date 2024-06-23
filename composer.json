@@ -1,4 +1,14 @@
 {
+  "name": "sierie85/pool-cli",
+  "description": "adds CLI commands to pool-framework",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "sierie85",
+      "homepage": "https://github.com/sierie85"
+    }
+  ],
+  "license": "MIT",
   "require": {
     "symfony/console": "^7.1",
     "ext-pdo": "*"
