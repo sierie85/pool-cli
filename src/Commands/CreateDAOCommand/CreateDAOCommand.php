@@ -18,7 +18,7 @@ class CreateDAOCommand extends Command
     {
         $this->setName('create_dao')
             ->setDescription('creates new DAO')
-            ->setHelp('help isnt needed :D');
+            ->setHelp('lookup on pool-documentation/pool-cli how to create new GUI');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -36,6 +36,10 @@ class CreateDAOCommand extends Command
         $columns = $this->getColumnsMeta($this->pdo, $table);
         $className = self::stringToCamelcase($table, '_');
 
+        if (is_file(DAO_DIR . "/$className.php")) {
+            $io->error("DAO already exists");
+            return Command::FAILURE;
+        }
         $dao = file_put_contents(
             DAO_DIR . "/$className.php",
             $this->generateDAO($columns, $table, $database, $className)
