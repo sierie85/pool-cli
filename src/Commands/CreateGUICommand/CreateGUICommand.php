@@ -25,7 +25,11 @@ class CreateGUICommand extends Command
 
         $io->title('<info>Generate new GUI</info>');
 
-        $projectDirs = Helper::getProjectDirs(SRC_DIR);
+        $projectDirs = Helper::getProjectDirs(SRC_DIR, 'guis');
+        if (empty($projectDirs)) {
+            $io->error('No project-folders with guis directory found');
+            return Command::FAILURE;
+        }
         $project = $io->choice('In which project you want to create a new GUI?', $projectDirs);
         $guiName = $io->askQuestion(new Question('Name of the GUI you want to create? No GUI_ needed'));
 
