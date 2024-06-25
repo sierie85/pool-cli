@@ -5,13 +5,28 @@ namespace Pool_CLI\Helper;
 
 class Helper
 {
-    public static function getProjectDirs(string $sourceDir): array
+    /**
+     *
+     * @param string $sourceDir
+     * @param string $indicator
+     * @return array
+     */
+    public static function getProjectDirs(string $sourceDir, string $indicator): array
     {
         $projectDirs = [];
-        $iterator = new \DirectoryIterator($sourceDir);
-        foreach ($iterator as $items) {
+        $dirIterator = new \DirectoryIterator($sourceDir);
+        foreach ($dirIterator as $items) {
             if ($items->isDir() && !$items->isDot()) {
-                $projectDirs[] = $items->getFilename();
+                $folderIterator = new \DirectoryIterator($sourceDir . '/' . $items->getFilename());
+                $isProject = false;
+                foreach ($folderIterator as $folder) {
+                    if ($folder->isDir() && !$folder->isDot() && $folder->getFilename() === $indicator) {
+                        $isProject = true;
+                    }
+                }
+                if ($isProject) {
+                    $projectDirs[] = $items->getFilename();
+                }
             }
         }
         return $projectDirs;

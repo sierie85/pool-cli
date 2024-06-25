@@ -39,16 +39,24 @@ todo: add options --no-comments --no-styles --no-scripts etc.
 php vendor/bin/pool-cli create_dao
 ```
 
-### List all schemes / routes (*todo*)
+### List all schemes / routes (*alpha*)
 
 ```bash
-php vendor/bin/pool-cli show_routes
+php vendor/bin/pool-cli list_schemes
 ```
 
-### List all GUI's (*todo*)
+### List all GUI's (*alpha*)
 
 ```bash
 php vendor/bin/pool-cli list_guis
+```
+
+### List all ajaxRequest's (*todo*)
+
+(n)ajaxRequest per (n)gui in select project
+
+```bash
+php vendor/bin/pool-cli list_ajax
 ```
 
 ## Tests
