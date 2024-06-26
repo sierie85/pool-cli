@@ -1,6 +1,6 @@
 # Pool-CLI
 
-adds CLI commands to pool-framework
+adds CLI commands to pool-framework <https://github.com/manhart/pool>
 
 ## install
 
