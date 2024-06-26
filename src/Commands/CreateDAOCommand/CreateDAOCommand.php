@@ -40,6 +40,26 @@ class CreateDAOCommand extends Command
             $io->error("DAO already exists");
             return Command::FAILURE;
         }
+
+        $fks = $this->getForeignKeys($this->pdo, $table, $database);
+        if (count($fks) > 0) {
+            foreach ($fks as $fk) {
+                $index = 0;
+                foreach ($columns as $column) {
+                    if ($column['Field'] === $fk['COLUMN_NAME']) {
+                        $columns[$index]['ForeignKeys'][] = [
+                            'constraint_name' => $fk['CONSTRAINT_NAME'],
+                            'referenced_table_name' => $fk['REFERENCED_TABLE_NAME'],
+                            'referenced_column_name' => $fk['REFERENCED_COLUMN_NAME'],
+                        ];
+                    }
+                    $index++;
+                }
+            }
+        }
+
+        var_dump($columns);
+
         $dao = file_put_contents(
             DAO_DIR . "/$className.php",
             $this->generateDAO($columns, $table, $database, $className)
@@ -70,15 +90,28 @@ class CreateDAOCommand extends Command
         return $pdo->query('SHOW DATABASES')->fetchAll(\PDO::FETCH_COLUMN);
     }
 
-    private function getTables(PDO $pdo, $database): array
+    private function getTables(PDO $pdo, string $database): array
     {
         $pdo->query('USE ' . $database);
         return $pdo->query('SHOW TABLES')->fetchAll(\PDO::FETCH_COLUMN);
     }
 
-    private function getColumnsMeta(PDO $pdo, $table): array
+    private function getColumnsMeta(PDO $pdo, string $table): array
     {
-        return $pdo->query('SHOW FULL COLUMNS FROM ' . $table)->fetchAll(PDO::FETCH_ASSOC);
+        return $pdo->query("SHOW FULL COLUMNS FROM $table")->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    private function getForeignKeys(PDO $pdo, string $table, string $database): array
+    {
+        $stmt = $pdo->prepare("
+            SELECT COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME 
+            FROM information_schema.KEY_COLUMN_USAGE 
+            WHERE TABLE_NAME = :table 
+            AND TABLE_SCHEMA = :database 
+            AND REFERENCED_TABLE_NAME IS NOT NULL
+        ");
+        $stmt->execute([':table' => $table, ':database' => $database]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     private function generateDAO(array $columns, string $table, string $database, string $className): string
@@ -92,7 +125,22 @@ class CreateDAOCommand extends Command
             $primaryKey = $column['Key'] === 'PRI' ? 'primaryKey' : '';
             $extra = $column['Extra'] !== '' ? "{$column['Extra']}" : '';
             $notNull = $column['Null'] === 'NO' ? 'NOT NULL' : '';
-            $columnsComment .= "\t * {$column['Field']} ({$column['Type']}) $notNull $extra $primaryKey\n";
+            $fkInfo = '';
+
+            if (isset($column['ForeignKeys'])) {
+                foreach ($column['ForeignKeys'] as $fkName) {
+                    $fk = "\tprotected array \$fk = [\n";
+                    $fk .= "\t\t'{$fkName['constraint_name']}' => [\n";
+                    $fk .= "\t\t\t'table' => '{$fkName['referenced_table_name']}',\n";
+                    $fk .= "\t\t\t'column' => '{$fkName['referenced_column_name']}'\n";
+                    $fk .= "\t\t]\n";
+                    $fk .= "\t];\n";
+
+                    $fkInfo = "FOREIGN KEY ({$column['Field']}) REFERENCES {$fkName['referenced_table_name']}({$fkName['referenced_column_name']})";
+                }
+            }
+
+            $columnsComment .= "\t * {$column['Field']} ({$column['Type']}) $notNull $extra $primaryKey $fkInfo\n";
 
             if ($column['Key'] === 'PRI') {
                 $pk = "\tprotected array \$pk = [\n";
@@ -117,7 +165,8 @@ class CreateDAOCommand extends Command
         $fileData .= "\tprotected static ?string \$databaseName = '$database';\n";
         $fileData .= "\tprotected static ?string \$tableName = '$table';\n";
         $fileData .= $pk;
-        $fileData .= "\t\n";
+        $fileData .= "\n";
+        $fileData .= $fk . "\n";
         $fileData .= "\t/**\n";
         $fileData .= "\t * columns of table $table\n";
         $fileData .= "\t *\n";
