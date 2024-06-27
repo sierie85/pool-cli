@@ -1,4 +1,4 @@
-# Pool-CLI
+# Pool-CLI (*alpha+)
 
 adds CLI commands to pool-framework <https://github.com/manhart/pool>
 
