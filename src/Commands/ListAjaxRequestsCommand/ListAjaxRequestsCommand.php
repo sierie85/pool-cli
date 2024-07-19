@@ -5,6 +5,7 @@ namespace Pool_CLI\Commands\ListAjaxRequestsCommand;
 
 use Pool_CLI\Helper\Helper;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -53,13 +54,13 @@ class ListAjaxRequestsCommand extends Command
                     }
                 }
             }
-
         }
 
-        $io->table(
-            ['GUI', 'url-query', 'js-handler-name', 'php-method'],
-            $ajaxRequests
-        );
+        $table = new Table($output);
+        $table->setHeaders(['GUI', 'url-query', 'js-handler-name', 'php-method']);
+        $table->setRows($ajaxRequests);
+        $table->setStyle('box-double');
+        $table->render();
 
         return Command::SUCCESS;
     }

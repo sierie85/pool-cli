@@ -6,6 +6,7 @@ namespace Pool_CLI\Commands\ListGuisCommand;
 
 use Pool_CLI\Helper\Helper;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -46,10 +47,11 @@ class ListGuisCommand extends Command
             }
         }
 
-        $io->table(
-            ['GUI', 'has schema', '?'],
-            $guis
-        );
+        $table = new Table($output);
+        $table->setHeaders(['GUI', 'has schema', '?']);
+        $table->setRows($guis);
+        $table->setStyle('box-double');
+        $table->render();
 
         return Command::SUCCESS;
     }

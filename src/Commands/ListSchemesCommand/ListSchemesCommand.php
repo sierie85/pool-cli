@@ -6,6 +6,7 @@ namespace Pool_CLI\Commands\ListSchemesCommand;
 
 use Pool_CLI\Helper\Helper;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -42,13 +43,15 @@ class ListSchemesCommand extends Command
 
                 $routes[$route]['url'] = "/?schema=" . $route;
                 $routes[$route]['GUI'] = implode(',', $guis);
+//                $routes[] = new TableSeparator();
             }
         }
 
-        $io->table(
-            ['Route', 'GUI(s) included'],
-            $routes
-        );
+        $table = new Table($output);
+        $table->setHeaders(['Route', 'GUI(s) included']);
+        $table->setRows($routes);
+        $table->setStyle('box-double');
+        $table->render();
 
         return Command::SUCCESS;
     }
