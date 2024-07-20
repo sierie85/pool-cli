@@ -15,7 +15,7 @@ class ListGuisCommand extends Command
 {
     protected function configure(): void
     {
-        $this->setName('list_guis')
+        $this->setName('list:guis')
             ->setDescription('show all guis in chosen project')
             ->setHelp('lookup on pool-documentation/pool-cli how to list all GUIs in project');
     }
@@ -27,7 +27,7 @@ class ListGuisCommand extends Command
         $io->title('<info>Show routes of Project</info>');
 
         $projectDirs = Helper::getProjectDirs(SRC_DIR, 'guis');
-        $project = $io->choice('Of which project you want to see all routes?', $projectDirs);
+        $project = $io->choice('Of which project you want to see all GUIS?', $projectDirs);
         $projectDir = SRC_DIR . '/' . $project . '/guis';
 
         $guis = [];
@@ -36,6 +36,8 @@ class ListGuisCommand extends Command
             if ($items->isDir() && !$items->isDot()) {
                 $fileIterator = new \DirectoryIterator($projectDir . '/' . $items->getFilename());
                 // todo: maybe not 100% accurate! -> not sure if .html file in gui-folder = schemas exists..
+                // no it is not engouh.. we need to check if there is a html file in the schema folder which loads
+                // this gui...?
                 $hasHtml = false;
                 foreach ($fileIterator as $item) {
                     if ($item->isFile() && $item->getExtension() === 'html') {

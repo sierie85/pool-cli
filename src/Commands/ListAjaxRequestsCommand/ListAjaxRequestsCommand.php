@@ -14,7 +14,7 @@ class ListAjaxRequestsCommand extends Command
 {
     protected function configure(): void
     {
-        $this->setName('list_ajax_requests')
+        $this->setName('list:ajax')
             ->setDescription('show all ajax_requests from guis in chosen project')
             ->setHelp('lookup on pool-documentation/pool-cli how to list all ajax_requests from GUIs in project');
     }

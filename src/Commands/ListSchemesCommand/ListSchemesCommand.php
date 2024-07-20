@@ -15,7 +15,7 @@ class ListSchemesCommand extends Command
 {
     protected function configure(): void
     {
-        $this->setName('list_schemes')
+        $this->setName('list:schemes')
             ->setDescription('list all schemes(routes) in chosen project')
             ->setHelp('lookup on pool-documentation/pool-cli how to list all schemes in project');
     }

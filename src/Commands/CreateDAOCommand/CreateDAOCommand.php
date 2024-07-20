@@ -10,13 +10,15 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+use function Symfony\Component\String\u;
+
 class CreateDAOCommand extends Command
 {
     private PDO $pdo;
 
     protected function configure(): void
     {
-        $this->setName('create_dao')
+        $this->setName('create:dao')
             ->setDescription('creates new DAO')
             ->setHelp('lookup on pool-documentation/pool-cli how to create new GUI');
     }
@@ -34,12 +36,16 @@ class CreateDAOCommand extends Command
         $tables = $this->getTables($this->pdo, $database);
         $table = $io->choice('Select Table', $tables);
         $columns = $this->getColumnsMeta($this->pdo, $table);
-        $className = self::stringToCamelcase($table, '_');
+        $className = u($table)->trim()->camel()->ascii()->toString();
+
+        // todo: select where to save DAO!
 
         if (is_file(DAO_DIR . "/$className.php")) {
             $io->error("DAO already exists");
             return Command::FAILURE;
         }
+
+        // extract to own method? execute before?
 
         $fks = $this->getForeignKeys($this->pdo, $table, $database);
         if (count($fks) > 0) {
@@ -178,10 +184,5 @@ class CreateDAOCommand extends Command
         $fileData .= "}\n";
 
         return $fileData;
-    }
-
-    public static function stringToCamelcase(string $string, string $separator): string
-    {
-        return ucfirst(str_replace($separator, '', ucwords($string, $separator)));
     }
 }
