@@ -54,27 +54,33 @@ php vendor/bin/pool-cli *command*
 ### Create GUI
 
 ```bash
-php vendor/bin/pool-cli create_gui
+php vendor/bin/pool-cli create:gui
 ```
 
-todo: add options --no-comments --no-styles --no-scripts etc.
+additionally you can pass the following options:
+
+```bash
+php vendor/bin/pool-cli create:gui --no-style # will not create a stylesheet file
+php vendor/bin/pool-cli create:gui --no-script # will not create a javascript file
+php vendor/bin/pool-cli create:gui --only-class # will only create a class file
+```
 
 ### Create DAO
 
 ```bash
-php vendor/bin/pool-cli create_dao
+php vendor/bin/pool-cli create:dao
 ```
 
 ### List all schemes / routes
 
 ```bash
-php vendor/bin/pool-cli list_schemes
+php vendor/bin/pool-cli list:schemes
 ```
 
 ### List all GUI's
 
 ```bash
-php vendor/bin/pool-cli list_guis
+php vendor/bin/pool-cli list:guis
 ```
 
 ### List all ajaxRequest's
@@ -82,7 +88,7 @@ php vendor/bin/pool-cli list_guis
 (n)ajaxRequest per (n)gui in select project
 
 ```bash
-php vendor/bin/pool-cli list_ajax
+php vendor/bin/pool-cli list:ajax
 ```
 
 ## Tests
