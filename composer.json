@@ -1,6 +1,6 @@
 {
   "name": "sierie85/pool-cli",
-  "description": "adds CLI commands to pool-framework",
+  "description": "adds commands to POOL",
   "version": "1.0.0",
   "authors": [
     {
@@ -23,6 +23,6 @@
     }
   },
   "require-dev": {
-    "phpunit/phpunit": "11"
+    "phpunit/phpunit": "11.2.8"
   }
 }

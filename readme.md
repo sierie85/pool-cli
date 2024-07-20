@@ -96,5 +96,5 @@ php vendor/bin/pool-cli list:ajax
 ### Run Test in non production environment
 
 ```bash
-./vendor/bin/phpunit tests
+php vendor/bin/phpunit tests -c tests/phpunit.xml
 ```

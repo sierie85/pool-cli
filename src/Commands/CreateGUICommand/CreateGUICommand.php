@@ -13,8 +13,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 use function Symfony\Component\String\u;
 
+/**
+ * Command to create a new GUI within a specified project.
+ *
+ * This command facilitates the creation of a new graphical user interface (GUI) by generating
+ * the necessary PHP class, HTML template, JavaScript, and CSS files. It provides options to
+ * exclude the generation of CSS and JavaScript files, or to only generate the PHP class.
+ */
 class CreateGUICommand extends Command
 {
+    /**
+     * Configures the command settings.
+     * Defines the command name, options, description, and help message.
+     *
+     * @return void
+     */
     protected function configure(): void
     {
         $this->setName('create:gui')
@@ -25,6 +38,13 @@ class CreateGUICommand extends Command
             ->setHelp('lookup on pool-documentation/pool-cli how to create new GUI');
     }
 
+    /**
+     * Executes the command to create a new GUI.
+     *
+     * @param InputInterface $input The input interface.
+     * @param OutputInterface $output The output interface.
+     * @return int The command exit status.
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -98,7 +118,7 @@ class CreateGUICommand extends Command
         }
 
         // create if not exits schemes directory
-        if (!$this->isDir($projectDir . '/schemes')) $this->generateDirectory($projectDir . '/schemes', $io);
+        if (!is_dir($projectDir . '/schemes')) $this->generateDirectory($projectDir . '/schemes', $io);
         // create schemes file
         if (!$this->generateFile(
             $projectDir . '/schemes/' . $guiNameForHtml->replace('_', '-') . '.html',
@@ -110,14 +130,16 @@ class CreateGUICommand extends Command
         return Command::SUCCESS;
     }
 
-    private function isDir(string $dir): bool
-    {
-        return is_dir($dir);
-    }
-
+    /**
+     * Generates a directory if it does not exist.
+     *
+     * @param string $dir The directory path.
+     * @param SymfonyStyle $io The SymfonyStyle IO instance for output.
+     * @return bool True if the directory was successfully created or already exists, false otherwise.
+     */
     private function generateDirectory(string $dir, SymfonyStyle $io): bool
     {
-        if ($this->isDir($dir)) {
+        if (is_dir($dir)) {
             $io->error("directory: $dir already exists");
             return false;
         }
@@ -128,6 +150,14 @@ class CreateGUICommand extends Command
         return true;
     }
 
+    /**
+     * Generates a file with the given content.
+     *
+     * @param string $file The file path.
+     * @param string $data The content to write to the file.
+     * @param SymfonyStyle $io The SymfonyStyle IO instance for output.
+     * @return bool True if the file was successfully created, false otherwise.
+     */
     private function generateFile(string $file, string $data, SymfonyStyle $io): bool
     {
         if (!file_put_contents($file, $data)) {

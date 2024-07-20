@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Pool_CLI\Commands\ListSchemesCommand;
@@ -11,8 +10,22 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * Command to list all schemes (routes) in a selected project.
+ *
+ * This command provides a list of all schemes (also known as routes) available within a specified project.
+ * It checks the project's 'schemes' directory for HTML files that represent individual schemes and
+ * extracts GUI components mentioned within these files. The command outputs a table listing each scheme and the GUI components it includes.
+ */
 class ListSchemesCommand extends Command
 {
+    /**
+     * Configures the command settings.
+     * Sets the name, description, and help message for the command. This information is used by the console application
+     * to display help and command lists.
+     *
+     * @return void
+     */
     protected function configure(): void
     {
         $this->setName('list:schemes')
@@ -20,6 +33,13 @@ class ListSchemesCommand extends Command
             ->setHelp('lookup on pool-documentation/pool-cli how to list all schemes in project');
     }
 
+    /**
+     * Executes the command to list all schemes (routes) in the selected project.
+     *
+     * @param InputInterface $input The input interface provided by Symfony Console.
+     * @param OutputInterface $output The output interface provided by Symfony Console.
+     * @return int Returns 0 on success, or an error code on failure.
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
@@ -43,7 +63,6 @@ class ListSchemesCommand extends Command
 
                 $routes[$route]['url'] = "/?schema=" . $route;
                 $routes[$route]['GUI'] = implode(',', $guis);
-//                $routes[] = new TableSeparator();
             }
         }
 
