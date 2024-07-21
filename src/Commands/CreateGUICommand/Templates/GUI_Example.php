@@ -1,9 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace _project_dir_\guis\GUI_Example;
-
-use pool\classes\Core\Input\Input;
+namespace NAMESPACENAME;
 
 class GUI_Example extends \GUI_Module
 {
@@ -12,7 +10,7 @@ class GUI_Example extends \GUI_Module
      * defines which superglobals should be used in this module.
      * Superglobal variables are passed to superglobals in the Input class.
      */
-    protected int $superglobals = Input::GET | Input::POST;
+    protected int $superglobals = \Input::GET | \Input::POST;
 
     /**
      * @var array<string, string> $templates

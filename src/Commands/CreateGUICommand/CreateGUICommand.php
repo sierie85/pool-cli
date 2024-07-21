@@ -11,6 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+use Composer\Autoload\ClassLoader;
+
 use function Symfony\Component\String\u;
 
 /**
@@ -64,6 +66,7 @@ class CreateGUICommand extends Command
         $guiNameWithPrefix = 'GUI_' . u($guiName)->trim()->camel()->title()->ascii();
         $guiNameForHtml = u($guiName)->trim()->lower()->ascii()->snake();
         $guiDir = $fullGUI_DIR . '/' . $guiNameWithPrefix;
+        $namespace = Helper::generateNamespace(new Helper, $project, 'guis', $guiNameWithPrefix);
 
         $io->text('New GUI: ' . $guiNameWithPrefix . ' will be created in project: ' . $project);
 
@@ -72,9 +75,8 @@ class CreateGUICommand extends Command
 
         // create main GUI Class
         $dummyClass = file_get_contents(__DIR__ . '/Templates/GUI_Example.php');
-        // TODO: how to proper handle namespace...?
-        // TODO: how to add proper use statements?
         $mainClassContent = str_replace('_project_dir_', $project, $dummyClass);
+        $mainClassContent = str_replace('NAMESPACENAME', $namespace, $mainClassContent);
         $mainClassContent = str_replace('GUI_Example', $guiNameWithPrefix, $mainClassContent);
         $mainClassContent = str_replace('tpl_example.html', 'tpl_' . $guiNameForHtml . '.html', $mainClassContent);
         if (!$this->generateFile(
