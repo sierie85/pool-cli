@@ -16,7 +16,7 @@ add the following to your composer.json file
       "url": "git@github.com:sierie85/pool_cli.git"
     }
   ],
-  "require": {
+  "require-dev": {
     "sierie85/pool-cli": "^1.0"
   }
 }
