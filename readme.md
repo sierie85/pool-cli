@@ -17,7 +17,7 @@ add the following to your composer.json file
     }
   ],
   "require": {
-    "sierie85/pool-cli": "dev-main"
+    "sierie85/pool-cli": "^1.0"
   }
 }
 ```
