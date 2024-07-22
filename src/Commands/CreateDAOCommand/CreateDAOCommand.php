@@ -72,10 +72,14 @@ class CreateDAOCommand extends Command
             return Command::FAILURE;
         }
 
-        function setProjectDir($directories, $io, $path)
+        function setProjectDir($directories, $io, $path): string
         {
-            $directory = $io->choice('In which project you want to create a new GUI?', $directories);
-            $path = $path . '/' . $directory;
+            if (in_array('daos', $directories)) {
+                $path = $path . '/daos';
+            } else {
+                $directory = $io->choice('In which project you want to create a new GUI?', $directories);
+                $path = $path . '/' . $directory;
+            }
             $scan = scandir($path);
             $directoryHasDirectories = array_values(array_filter($scan, function ($dir) use ($path) {
                 return is_dir($path . '/' . $dir) && $dir !== '.' && $dir !== '..';
@@ -246,13 +250,10 @@ class CreateDAOCommand extends Command
 
             if (isset($column['ForeignKeys'])) {
                 foreach ($column['ForeignKeys'] as $fkName) {
-                    $fk = "\tprotected array \$fk = [\n";
                     $fk .= "\t\t'{$fkName['constraint_name']}' => [\n";
                     $fk .= "\t\t\t'table' => '{$fkName['referenced_table_name']}',\n";
                     $fk .= "\t\t\t'column' => '{$fkName['referenced_column_name']}'\n";
                     $fk .= "\t\t]\n";
-                    $fk .= "\t];\n";
-
                     $fkInfo = "FOREIGN KEY ({$column['Field']}) REFERENCES {$fkName['referenced_table_name']}({$fkName['referenced_column_name']})";
                 }
             }
@@ -278,8 +279,12 @@ class CreateDAOCommand extends Command
         $fileData .= "\tprotected static ?string \$databaseName = '$database';\n";
         $fileData .= "\tprotected static ?string \$tableName = '$table';\n";
         $fileData .= $pk;
+        if ($fk) {
+            $fileData .= "\tprotected array \$fk = [\n";
+            $fileData .= $fk;
+            $fileData .= "\t];\n";
+        }
         $fileData .= "\n";
-        $fileData .= $fk ? $fk . "\n" : '';
         $fileData .= "\t/**\n";
         $fileData .= "\t * columns of table $table\n";
         $fileData .= "\t *\n";

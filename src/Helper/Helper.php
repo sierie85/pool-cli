@@ -78,7 +78,7 @@ class Helper
         string $suffix = null
     ): string
     {
-        $suffix = $suffix !== null ? $suffix . '\\' : '';
+        $suffix = $suffix !== null ? '\\' . $suffix : '';
         $autoloadNamespacePrefix = $helper->getNamespacePrefix($projectDir);
         if ($autoloadNamespacePrefix !== '') {
             return $autoloadNamespacePrefix . $entity . $suffix;
