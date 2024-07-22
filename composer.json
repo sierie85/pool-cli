@@ -11,8 +11,8 @@
   "license": "MIT",
   "require": {
     "symfony/console": "^7.1",
-    "ext-pdo": "*",
-    "symfony/string": "^7.1"
+    "symfony/string": "^7.1",
+    "ext-pdo": "*"
   },
   "bin": [
     "bin/pool-cli"
