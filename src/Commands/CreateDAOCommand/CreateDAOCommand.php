@@ -253,7 +253,7 @@ class CreateDAOCommand extends Command
                     $fk .= "\t\t'{$fkName['constraint_name']}' => [\n";
                     $fk .= "\t\t\t'table' => '{$fkName['referenced_table_name']}',\n";
                     $fk .= "\t\t\t'column' => '{$fkName['referenced_column_name']}'\n";
-                    $fk .= "\t\t]\n";
+                    $fk .= "\t\t],\n";
                     $fkInfo = "FOREIGN KEY ({$column['Field']}) REFERENCES {$fkName['referenced_table_name']}({$fkName['referenced_column_name']})";
                 }
             }
