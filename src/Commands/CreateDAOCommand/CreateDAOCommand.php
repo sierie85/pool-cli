@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pool_CLI\Commands\CreateDAOCommand;
 
 use Pool_CLI\DBConnector\DBConnector;
 use PDO;
-use Pool_CLI\Helper\Helper;
+use Pool_CLI\Utils\Utils;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -34,7 +35,8 @@ class CreateDAOCommand extends Command
      */
     protected function configure(): void
     {
-        $this->setName('create:dao')
+        $this
+            ->setName('create:dao')
             ->setDescription('creates new DAO')
             ->setHelp('lookup on pool-documentation/pool-cli how to create new GUI');
     }
@@ -66,7 +68,7 @@ class CreateDAOCommand extends Command
         $fks = $this->getForeignKeys($this->pdo, $table, $database);
         $columns = $this->addForeignKeysInformation($columns, $fks);
 
-        $projectDirs = Helper::getProjectDirs(SRC_DIR, 'daos');
+        $projectDirs = Utils::getProjectDirs(SRC_DIR, 'daos');
         if (empty($projectDirs)) {
             $io->error('No project-folders with a daos directory found');
             return Command::FAILURE;
@@ -103,7 +105,7 @@ class CreateDAOCommand extends Command
 
         $dao = file_put_contents(
             $daoDirectory . "/$className.php",
-            $this->generateDAO($columns, $table, $database, $className, $namespace)
+            $this->generateDAO($columns, $table, $database, $className, $namespace),
         );
         if (!$dao) {
             $io->error("dao failed to create");
@@ -177,13 +179,15 @@ class CreateDAOCommand extends Command
      */
     private function getForeignKeys(PDO $pdo, string $table, string $database): array
     {
-        $stmt = $pdo->prepare("
+        $stmt = $pdo->prepare(
+            "
             SELECT COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME 
             FROM information_schema.KEY_COLUMN_USAGE 
             WHERE TABLE_NAME = :table 
             AND TABLE_SCHEMA = :database 
             AND REFERENCED_TABLE_NAME IS NOT NULL
-        ");
+        ",
+        );
         $stmt->execute([':table' => $table, ':database' => $database]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -231,12 +235,12 @@ class CreateDAOCommand extends Command
      * @return string The complete DAO class as a string, ready to be saved to a file.
      */
     private function generateDAO(
-        array  $columns,
+        array $columns,
         string $table,
         string $database,
         string $className,
-        string $namespace): string
-    {
+        string $namespace,
+    ): string {
         $pk = ""; // array? more than one primary key?
         $fk = ""; // array of foreign keys
         $columnsComment = "";

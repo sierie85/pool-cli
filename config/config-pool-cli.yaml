@@ -1,0 +1,11 @@
+source_directory: 'project_example_folder'
+
+external_commands_directory: 'project_example_folder/commands'
+
+database_connections:
+  default:
+    host: 'localhost'
+    port: '3306'
+    database: 'example'
+    user: 'username'
+    password: 'password'

@@ -1,9 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pool_CLI\Commands\ListSchemesCommand;
 
-use Pool_CLI\Helper\Helper;
+use Pool_CLI\Utils\Utils;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +29,8 @@ class ListSchemesCommand extends Command
      */
     protected function configure(): void
     {
-        $this->setName('list:schemes')
+        $this
+            ->setName('list:schemes')
             ->setDescription('list all schemes(routes) in chosen project')
             ->setHelp('lookup on pool-documentation/pool-cli how to list all schemes in project');
     }
@@ -46,7 +48,7 @@ class ListSchemesCommand extends Command
 
         $io->title('<info>List all schemes(routes) of Project</info>');
 
-        $projectDirs = Helper::getProjectDirs(SRC_DIR, 'guis');
+        $projectDirs = Utils::getProjectDirs(SRC_DIR, 'guis');
         $project = $io->choice('Of which project you want to see all schemes(routes)?', $projectDirs);
         $projectDir = SRC_DIR . '/' . $project . '/schemes';
 

@@ -7,35 +7,23 @@ use Pool_CLI\Commands\CreateDAOCommand\CreateDAOCommand;
 use Pool_CLI\Commands\ListAjaxRequestsCommand\ListAjaxRequestsCommand;
 use Pool_CLI\Commands\ListSchemesCommand\ListSchemesCommand;
 use Pool_CLI\Commands\ListGuisCommand\ListGuisCommand;
-
+use Pool_CLI\Utils\Utils;
 use Symfony\Component\Console\Application;
 
 require_once $_composer_autoload_path ?? __DIR__ . '/../vendor/autoload.php';
 
-$configPath = '';
-if (isset($_composer_bin_dir)) {
-    $configPath = $_composer_bin_dir . '/../../config';
-    if (!is_file($configPath . '/pool-cli.php')) {
-        echo 'No config-file found. Try to create an example in /config/pool-cli.php' . PHP_EOL;
-        if (!copy($_composer_bin_dir . '/../sierie85/pool-cli/config/pool-cli.php.empty', $configPath . '/pool-cli.php')) {
-            echo 'Could not create config-file. Please create a config/pool-cli.php directory and file and try again';
-            exit(1);
-        }
-        echo 'Config-file created. Please edit it and try again' . PHP_EOL;
-        exit(1);
-    }
-} else {
-    $configPath = __DIR__ . '/../config';
-}
-require_once $configPath . '/pool-cli.php';
+$binDir = $_composer_bin_dir ?? __DIR__ . '/../vendor/bin';
+Utils::loadConfig($binDir);
 
-$app = new Application('Pool-CLI', '1.0.0');
-
+$app = new Application('Pool-CLI', '1.1.0');
 $app->add(new CreateGUICommand());
 $app->add(new CreateDAOCommand());
 $app->add(new ListSchemesCommand());
 $app->add(new ListGuisCommand());
 $app->add(new ListAjaxRequestsCommand());
+if (EXTERNAL_COMMANDS_DIR !== null) {
+    Utils::loadExternalCommands($app);
+}
 
 try {
     $app->run();

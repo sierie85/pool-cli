@@ -1,4 +1,3 @@
 .idea
 vendor
-config/pool-cli.php
-src/project_example_folder
+project_example_folder
