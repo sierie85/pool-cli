@@ -17,28 +17,27 @@ add the following to your composer.json file
     }
   ],
   "require-dev": {
-    "sierie85/pool-cli": "^1.0"
+    "sierie85/pool-cli": "^1.1.0"
   }
 }
 ```
 
 ## Configuration
 
-create a file in your root folder /config/pool-cli.php e.g.:
+a *config-pool-cli.yaml* file is required in the root of your project or in ./config. If you run a command and no
+config file is found, the cli will try to create one.
+The following is an example of a config file:
 
-```php
-const BASE_DIR = __DIR__ . '/..';
-const SRC_DIR = BASE_DIR . '/src';
-const DAO_DIR = SRC_DIR . '/daos';
-const DAO_NAMESPACE = 'App\daos';
-const DATABASE_CONNECTIONS = [
-    'default' => [
-        'host' => '127.0.0.1',
-        'port' => '3306',
-        'user' => 'root',
-        'password' => 'root',
-    ],
-];
+```yaml
+source_directory: 'project_example_folder'
+external_commands_directory: 'project_example_folder/commands'
+database_connections:
+  default:
+    host: 'localhost'
+    port: '3306'
+    database: 'example'
+    user: 'username'
+    password: 'password'
 ```
 
 ## Basic Usage
@@ -90,6 +89,18 @@ php vendor/bin/pool-cli list:guis
 ```bash
 php vendor/bin/pool-cli list:ajax
 ```
+
+## Extend CLI with custom commands
+
+you can extend the CLI with custom commands by creating a folder and class in the external_commands_directory defined in
+the config
+file. The following structure and naming must be provided:
+
+```
+/commandDirectory/NewCommand/NewCommand.php
+```
+
+The class must extend the Symfony::Command class and implement the execute method.
 
 ## Tests
 

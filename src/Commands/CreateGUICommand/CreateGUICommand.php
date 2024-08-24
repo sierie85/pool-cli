@@ -1,17 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pool_CLI\Commands\CreateGUICommand;
 
-use Pool_CLI\Helper\Helper;
+use Pool_CLI\Utils\Utils;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
-
-use Composer\Autoload\ClassLoader;
 
 use function Symfony\Component\String\u;
 
@@ -32,7 +31,8 @@ class CreateGUICommand extends Command
      */
     protected function configure(): void
     {
-        $this->setName('create:gui')
+        $this
+            ->setName('create:gui')
             ->addOption('no-style', 's', InputOption::VALUE_NONE, 'Dont create css file')
             ->addOption('no-script', 'j', InputOption::VALUE_NONE, 'Dont create js file')
             ->addOption('only-class', 'c', InputOption::VALUE_NONE, 'Just create class')
@@ -53,7 +53,7 @@ class CreateGUICommand extends Command
 
         $io->title('<info>Generate new GUI</info>');
 
-        $projectDirs = Helper::getProjectDirs(SRC_DIR, 'guis');
+        $projectDirs = Utils::getProjectDirs(SRC_DIR, 'guis');
         if (empty($projectDirs)) {
             $io->error('No project-folders with guis directory found');
             return Command::FAILURE;
@@ -66,12 +66,14 @@ class CreateGUICommand extends Command
         $guiNameWithPrefix = 'GUI_' . u($guiName)->trim()->camel()->title()->ascii();
         $guiNameForHtml = u($guiName)->trim()->lower()->ascii()->snake();
         $guiDir = $fullGUI_DIR . '/' . $guiNameWithPrefix;
-        $namespace = Helper::generateNamespace(new Helper, $project, 'guis', $guiNameWithPrefix);
+        $namespace = Utils::generateNamespace(new Utils, $project, 'guis', $guiNameWithPrefix);
 
         $io->text('New GUI: ' . $guiNameWithPrefix . ' will be created in project: ' . $project);
 
         // create gui directory
-        if (!$this->generateDirectory($guiDir, $io)) return Command::FAILURE;
+        if (!$this->generateDirectory($guiDir, $io)) {
+            return Command::FAILURE;
+        }
 
         // create main GUI Class
         $dummyClass = file_get_contents(__DIR__ . '/Templates/GUI_Example.php');
@@ -82,8 +84,10 @@ class CreateGUICommand extends Command
         if (!$this->generateFile(
             $guiDir . '/' . $guiNameWithPrefix . '.php',
             $mainClassContent,
-            $io
-        )) return Command::FAILURE;
+            $io,
+        )) {
+            return Command::FAILURE;
+        }
 
 
         if ($input->getOption('only-class')) {
@@ -96,8 +100,10 @@ class CreateGUICommand extends Command
         if (!$this->generateFile(
             $guiDir . '/' . 'tpl_' . $guiNameForHtml . '.html',
             $dummyTemplate,
-            $io
-        )) return Command::FAILURE;
+            $io,
+        )) {
+            return Command::FAILURE;
+        }
 
 
         // create dummy javascript
@@ -106,8 +112,10 @@ class CreateGUICommand extends Command
             if (!$this->generateFile(
                 $guiDir . '/' . $guiNameWithPrefix . '.js',
                 str_replace('GUI_Example', $guiNameWithPrefix, $dummyJavascript),
-                $io
-            )) return Command::FAILURE;
+                $io,
+            )) {
+                return Command::FAILURE;
+            }
         }
 
         // create dummy css if not disabled
@@ -115,18 +123,24 @@ class CreateGUICommand extends Command
             if (!$this->generateFile(
                 $guiDir . '/' . $guiNameWithPrefix . '.css',
                 '/* css for ' . $guiNameWithPrefix . ' */',
-                $io
-            )) return Command::FAILURE;
+                $io,
+            )) {
+                return Command::FAILURE;
+            }
         }
 
         // create if not exits schemes directory
-        if (!is_dir($projectDir . '/schemes')) $this->generateDirectory($projectDir . '/schemes', $io);
+        if (!is_dir($projectDir . '/schemes')) {
+            $this->generateDirectory($projectDir . '/schemes', $io);
+        }
         // create schemes file
         if (!$this->generateFile(
             $projectDir . '/schemes/' . $guiNameForHtml->replace('_', '-') . '.html',
             "[\\$project\\guis\\$guiNameWithPrefix\\$guiNameWithPrefix]",
-            $io
-        )) return Command::FAILURE;
+            $io,
+        )) {
+            return Command::FAILURE;
+        }
 
         $io->success("GUI generated successfully");
         return Command::SUCCESS;

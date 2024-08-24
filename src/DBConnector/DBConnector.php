@@ -1,12 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Pool_CLI\DBConnector;
 
 use PDO;
 use PDOException;
-
-// todo: maybe mysqli is needed for production/dev? interface, abstract class?
 
 /**
  * A class to handle database connections using PDO.
@@ -33,9 +32,7 @@ readonly class DBConnector
         private string $port,
         private string $user,
         private string $password,
-    )
-    {
-    }
+    ) {}
 
     /**
      * Establishes a PDO connection to the database.
