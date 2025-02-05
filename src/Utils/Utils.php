@@ -6,6 +6,7 @@ namespace Pool_CLI\Utils;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Yaml\Yaml;
+use PDO;
 
 /**
  * Provides utility functions for the Pool CLI application.
@@ -220,5 +221,65 @@ class Utils
                 }
             }
         }
+    }
+
+    /**
+     * Retrieves a list of databases from the current database connection.
+     *
+     * @param PDO $pdo The PDO instance for database connection.
+     * @return array An array of database names.
+     */
+    public static function getDatabases(PDO $pdo): array
+    {
+        return $pdo->query('SHOW DATABASES')->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * Retrieves a list of tables from the selected database.
+     *
+     * @param PDO $pdo The PDO instance for database connection.
+     * @param string $database The name of the selected database.
+     * @return array An array of table names within the selected database.
+     */
+    public static function getTables(PDO $pdo, string $database): array
+    {
+        $pdo->query('USE ' . $database);
+        return $pdo->query('SHOW TABLES')->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * Retrieves metadata for all columns of the selected table.
+     *
+     * @param PDO $pdo The PDO instance for database connection.
+     * @param string $table The name of the selected table.
+     * @return array An associative array containing column metadata.
+     */
+    public static function getColumnsMeta(PDO $pdo, string $table): array
+    {
+        return $pdo->query("SHOW FULL COLUMNS FROM $table")->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    /**
+     * Retrieves foreign key information for the selected table.
+     *
+     * @param PDO $pdo The PDO instance for database connection.
+     * @param string $table The name of the selected table.
+     * @param string $database The name of the selected database.
+     * @return array An associative array containing foreign key details.
+     */
+    public static function getForeignKeys(PDO $pdo, string $table, string $database): array
+    {
+        $stmt = $pdo->prepare(
+            "
+            SELECT COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
+            FROM information_schema.KEY_COLUMN_USAGE
+            WHERE TABLE_NAME = :table
+            AND TABLE_SCHEMA = :database
+            AND REFERENCED_TABLE_NAME IS NOT NULL
+        ",
+        );
+        $stmt->execute([':table' => $table, ':database' => $database]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

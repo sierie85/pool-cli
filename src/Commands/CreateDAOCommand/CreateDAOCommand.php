@@ -59,13 +59,13 @@ class CreateDAOCommand extends Command
 
         $dsn = $io->choice('Select DSN', array_keys(DATABASE_CONNECTIONS));
         $this->connect($dsn);
-        $databases = $this->getDatabases($this->pdo);
+        $databases = Utils::getDatabases($this->pdo);
         $database = $io->choice('Select Database', $databases);
-        $tables = $this->getTables($this->pdo, $database);
+        $tables = Utils::getTables($this->pdo, $database);
         $table = $io->choice('Select Table', $tables);
-        $columns = $this->getColumnsMeta($this->pdo, $table);
+        $columns = Utils::getColumnsMeta($this->pdo, $table);
         $className = u($table)->trim()->camel()->ascii()->title()->toString();
-        $fks = $this->getForeignKeys($this->pdo, $table, $database);
+        $fks = Utils::getForeignKeys($this->pdo, $table, $database);
         $columns = $this->addForeignKeysInformation($columns, $fks);
 
         $projectDirs = Utils::getProjectDirs(SRC_DIR, 'daos');
@@ -131,65 +131,6 @@ class CreateDAOCommand extends Command
             $dbCredentials['password'],
         );
         $this->pdo = $dbConnector->connect();
-    }
-
-    /**
-     * Retrieves a list of databases from the current database connection.
-     *
-     * @param PDO $pdo The PDO instance for database connection.
-     * @return array An array of database names.
-     */
-    private function getDatabases(PDO $pdo): array
-    {
-        return $pdo->query('SHOW DATABASES')->fetchAll(\PDO::FETCH_COLUMN);
-    }
-
-    /**
-     * Retrieves a list of tables from the selected database.
-     *
-     * @param PDO $pdo The PDO instance for database connection.
-     * @param string $database The name of the selected database.
-     * @return array An array of table names within the selected database.
-     */
-    private function getTables(PDO $pdo, string $database): array
-    {
-        $pdo->query('USE ' . $database);
-        return $pdo->query('SHOW TABLES')->fetchAll(\PDO::FETCH_COLUMN);
-    }
-
-    /**
-     * Retrieves metadata for all columns of the selected table.
-     *
-     * @param PDO $pdo The PDO instance for database connection.
-     * @param string $table The name of the selected table.
-     * @return array An associative array containing column metadata.
-     */
-    private function getColumnsMeta(PDO $pdo, string $table): array
-    {
-        return $pdo->query("SHOW FULL COLUMNS FROM $table")->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * Retrieves foreign key information for the selected table.
-     *
-     * @param PDO $pdo The PDO instance for database connection.
-     * @param string $table The name of the selected table.
-     * @param string $database The name of the selected database.
-     * @return array An associative array containing foreign key details.
-     */
-    private function getForeignKeys(PDO $pdo, string $table, string $database): array
-    {
-        $stmt = $pdo->prepare(
-            "
-            SELECT COLUMN_NAME, CONSTRAINT_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME 
-            FROM information_schema.KEY_COLUMN_USAGE 
-            WHERE TABLE_NAME = :table 
-            AND TABLE_SCHEMA = :database 
-            AND REFERENCED_TABLE_NAME IS NOT NULL
-        ",
-        );
-        $stmt->execute([':table' => $table, ':database' => $database]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
