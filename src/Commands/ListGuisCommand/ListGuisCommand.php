@@ -69,6 +69,7 @@ class ListGuisCommand extends Command
         }
 
         $table = new Table($output);
+        $table->setHeaderTitle($project);
         $table->setHeaders(['GUI', 'has template']);
         $table->setRows($guis);
         $table->setStyle('box-double');
