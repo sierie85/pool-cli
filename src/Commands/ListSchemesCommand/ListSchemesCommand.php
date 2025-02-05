@@ -69,6 +69,7 @@ class ListSchemesCommand extends Command
         }
 
         $table = new Table($output);
+        $table->setHeaderTitle($project);
         $table->setHeaders(['Route', 'GUI(s) included']);
         $table->setRows($routes);
         $table->setStyle('box-double');

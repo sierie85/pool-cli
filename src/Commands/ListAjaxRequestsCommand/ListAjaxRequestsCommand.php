@@ -64,6 +64,9 @@ class ListAjaxRequestsCommand extends Command
                         $file = file_get_contents(
                             $projectDir . '/' . $items->getFilename() . '/' . $item->getFilename(),
                         );
+
+                        //todo:  make table look like listDAOviaGui like
+
                         $matches = [];
                         preg_match_all('/\$this->registerAjaxMethod\((.*?[);])/', $file, $matches);
                         foreach ($matches[1] as $match) {
@@ -83,6 +86,7 @@ class ListAjaxRequestsCommand extends Command
         }
 
         $table = new Table($output);
+        $table->setHeaderTitle($project);
         $table->setHeaders(['GUI', 'url-query', 'js-handler-name', 'php-method']);
         $table->setRows($ajaxRequests);
         $table->setStyle('box-double');

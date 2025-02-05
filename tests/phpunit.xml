@@ -1,0 +1,12 @@
+<phpunit
+        colors="true"
+        bootstrap="bootstrap.php"
+        stopOnError="false"
+        stopOnFailure="false"
+        stopOnIncomplete="false"
+        stopOnSkipped="false"
+        stopOnRisky="false"
+        cacheResult="false"
+        testdox="true"
+>
+</phpunit>

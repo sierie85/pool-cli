@@ -44,10 +44,10 @@ readonly class DBConnector
      *
      * @return PDO The PDO connection object on success.
      */
-    public function connect(): PDO
+    public function connect(string $dbName = ''): PDO
     {
         try {
-            $dsn = "mysql:host={$this->host};port={$this->port};}";
+            $dsn = "mysql:host={$this->host};port={$this->port};$dbName";
             $pdo = new PDO($dsn, $this->user, $this->password);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
