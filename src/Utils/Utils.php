@@ -256,7 +256,7 @@ class Utils
      */
     public static function getColumnsMeta(PDO $pdo, string $table): array
     {
-        return $pdo->query("SHOW FULL COLUMNS FROM $table")->fetchAll(PDO::FETCH_ASSOC);
+        return $pdo->query("SHOW FULL COLUMNS FROM `$table`")->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
