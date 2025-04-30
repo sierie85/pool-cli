@@ -80,7 +80,7 @@ class Utils
         Utils $utils,
         string $projectDir,
         string $entity,
-        string $suffix = null,
+        ?string $suffix = null,
     ): string {
         $suffix = $suffix !== null ? '\\' . $suffix : '';
         $autoloadNamespacePrefix = $utils->getNamespacePrefix($projectDir);
@@ -99,7 +99,7 @@ class Utils
      * @param string|null $binDir The directory of the binary, used to determine the project root.
      * @return void
      */
-    public static function loadConfig(string|null $binDir = null): void
+    public static function loadConfig(?string $binDir = null): void
     {
         $projectRoot = self::getProjectRootDir($binDir);
         try {
@@ -126,7 +126,7 @@ class Utils
      * @param string|null $binDir The directory of the binary.
      * @return string The project root directory.
      */
-    private static function getProjectRootDir(string|null $binDir): string
+    private static function getProjectRootDir(?string $binDir): string
     {
         if (isset($binDir)) {
             return dirname($binDir, 2);
